@@ -8,6 +8,8 @@ public class LightController : MonoBehaviour
     public float amplitude = 0.3f;
     public float speed = 5f;
     public float colorChangeAmount = 0.3f;
+    public GameManager gameManager;
+    public float maxSpeedMultiplier = 2f;
 
     private float timeOffset1 = 0f;
     private float timeOffset2 = 0f;
@@ -34,14 +36,17 @@ public class LightController : MonoBehaviour
 
     void Update()
     {
-        float time = Time.time * speed;
+        float ageAgeDoRatio = gameManager != null ? gameManager.AgeAgeDo / 100f : 0f;
+        float currentSpeed = speed * (1f + ageAgeDoRatio * (maxSpeedMultiplier - 1f));
+
+        float time = Time.time * currentSpeed;
         float wave1 = Mathf.Sin(time * 1f + timeOffset1) * amplitude * 0.5f;
         float wave2 = Mathf.Sin(time * 1.7f + timeOffset2) * amplitude * 0.3f;
         float wave3 = Mathf.Sin(time * 2.3f + timeOffset3) * amplitude * 0.2f;
         float intensity = baseIntensity + wave1 + wave2 + wave3;
         light2D.intensity = Mathf.Max(1f, intensity);
 
-        float colorTime = Time.time * speed * 0.5f;
+        float colorTime = Time.time * currentSpeed * 0.5f;
         float hueShift1 = Mathf.Sin(colorTime * 0.8f + timeOffsetColor1) * colorChangeAmount;
         float hueShift2 = Mathf.Sin(colorTime * 1.3f + timeOffsetColor2) * colorChangeAmount * 0.5f;
         float hueShift = hueShift1 + hueShift2;
